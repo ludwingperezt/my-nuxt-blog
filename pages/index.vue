@@ -44,6 +44,7 @@ export default {
   //   },1500)
   // }
   asyncData(context, callback) {
+    console.log('run asyncData')
     setTimeout(() => {
       callback(null, {loadedPosts: [
           {
