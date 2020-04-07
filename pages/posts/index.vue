@@ -13,7 +13,7 @@ export default {
     asyncData(context, callback) {
         const timeWait = Math.floor(Math.random()*(2000-500+1)+500);
         setTimeout(() => {
-            callback(null, {
+            callback(new Error(), {
                 listOfPost: [
                     {
                         id: "99",
