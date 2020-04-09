@@ -19,7 +19,7 @@ export default {
         onSubmitted(postData) {
             // Al URL de la base de datos realtime en firebase hay que agregar
             // el nombre de la colección + .json (firebase así lo requiere)
-            axios.post('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json', postData)
+            axios.post('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json', {...postData, updatedDate: new Date()})
               .then(result => console.log(result))
               .catch(e => console.log(e))
         }
