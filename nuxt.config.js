@@ -24,6 +24,7 @@ export default {
   ** Global CSS
   */
   css: [
+    '~assets/styles/main.css'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -55,5 +56,12 @@ export default {
    */
   env: {
     baseUrl: process.env.BASE_URL || 'https://my-nuxt-blog-9b5f5.firebaseio.com'
+  },
+  /**
+   * Ejemplo de uso de transición entre páginas
+   */
+  pageTransition: {
+    name: 'page',
+    mode: 'out-in'
   }
 }
