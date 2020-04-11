@@ -49,5 +49,11 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  /**
+   * Ejemplo de uso de env para variables de entorno
+   */
+  env: {
+    baseUrl: process.env.BASE_URL || 'https://my-nuxt-blog-9b5f5.firebaseio.com'
   }
 }

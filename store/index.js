@@ -27,7 +27,7 @@ const createStore = () => {
         },
         actions: {
             nuxtServerInit(vuexContext, context) {
-                return axios.get('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json')
+                return axios.get(process.env.baseUrl + '/posts.json')
                     .then(res => {
                         const postList = []
                         for (let key in res.data) {
@@ -47,7 +47,7 @@ const createStore = () => {
                 
                 // Al URL de la base de datos realtime en firebase hay que agregar
                 // el nombre de la colección + .json (firebase así lo requiere)
-                return axios.post('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json', 
+                return axios.post(process.env.baseUrl + '/posts.json', 
                     createdPost)
                     .then(res => { 
                         vuexContext.commit('addPost', {...createdPost, id: res.data.name})
@@ -56,7 +56,7 @@ const createStore = () => {
             },
             editPost(vuexContext, editedPost) {
                 // Actualizar un post existente en el backend y en la store
-                return axios.put('https://my-nuxt-blog-9b5f5.firebaseio.com/posts/' 
+                return axios.put(process.env.baseUrl + '/posts/' 
                     + editedPost.id + '.json', editedPost)
                     .then(res => { 
                         vuexContext.commit('editPost', editedPost)
