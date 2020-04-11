@@ -14,6 +14,15 @@ const createStore = () => {
         mutations: {
             setPosts(state, posts) {
                 state.loadedPosts = posts
+            },
+            addPost(state, post) {
+                state.loadedPosts.push(post)
+            },
+            editPost(state, editedPost) {
+                const postIndex = state.loadedPosts.findIndex(
+                    post => post.id === editedPost.id
+                )
+                state.loadedPosts[postIndex] = editedPost
             }
         },
         actions: {
@@ -30,6 +39,29 @@ const createStore = () => {
             },
             setPosts(vuexContext, posts) {
                 vuexContext.commit('setPosts', posts)
+            },
+            addPost(vuexContext, post) {
+                // Insertar nuevo post y actualizar store
+
+                const createdPost = {...post, updatedDate: new Date()}
+                
+                // Al URL de la base de datos realtime en firebase hay que agregar
+                // el nombre de la colección + .json (firebase así lo requiere)
+                return axios.post('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json', 
+                    createdPost)
+                    .then(res => { 
+                        vuexContext.commit('addPost', {...createdPost, id: res.data.name})
+                    })
+                    .catch(e => console.log(e))
+            },
+            editPost(vuexContext, editedPost) {
+                // Actualizar un post existente en el backend y en la store
+                return axios.put('https://my-nuxt-blog-9b5f5.firebaseio.com/posts/' 
+                    + editedPost.id + '.json', editedPost)
+                    .then(res => { 
+                        vuexContext.commit('editPost', editedPost)
+                    })
+                    .catch(e => console.log(e))
             }
         },
         getters: {
