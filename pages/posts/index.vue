@@ -6,6 +6,7 @@
 
 <script>
 export default {
+    middleware: 'log',
     // fetch(context) {
     //     if (context.store.state.loadedPosts.length > 0) {
     //         return null

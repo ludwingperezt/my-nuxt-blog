@@ -71,4 +71,7 @@ export default {
     name: 'page',
     mode: 'out-in'
   }
+  // router: {
+  //   middleware: 'log'
+  // }
 }
