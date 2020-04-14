@@ -1,5 +1,4 @@
 import Vuex from 'vuex'
-import axios from 'axios'
 
 // La store debe ser un callable y no un objeto, ya que nuxt lo utiliza en 
 // el servidor para iniciar una store 
@@ -27,11 +26,11 @@ const createStore = () => {
         },
         actions: {
             nuxtServerInit(vuexContext, context) {
-                return axios.get(process.env.baseUrl + '/posts.json')
-                    .then(res => {
+                return context.app.$axios.$get('/posts.json')
+                    .then(data => {
                         const postList = []
-                        for (let key in res.data) {
-                            postList.push({...res.data[key], id: key})
+                        for (let key in data) {
+                            postList.push({...data[key], id: key})
                         }
                         vuexContext.commit('setPosts', postList)
                     })
@@ -47,16 +46,16 @@ const createStore = () => {
                 
                 // Al URL de la base de datos realtime en firebase hay que agregar
                 // el nombre de la colección + .json (firebase así lo requiere)
-                return axios.post(process.env.baseUrl + '/posts.json', 
+                return this.$axios.$post('/posts.json', 
                     createdPost)
-                    .then(res => { 
-                        vuexContext.commit('addPost', {...createdPost, id: res.data.name})
+                    .then(data => { 
+                        vuexContext.commit('addPost', {...createdPost, id: data.name})
                     })
                     .catch(e => console.log(e))
             },
             editPost(vuexContext, editedPost) {
                 // Actualizar un post existente en el backend y en la store
-                return axios.put(process.env.baseUrl + '/posts/' 
+                return this.$axios.$put('/posts/' 
                     + editedPost.id + '.json', editedPost)
                     .then(res => { 
                         vuexContext.commit('editPost', editedPost)
