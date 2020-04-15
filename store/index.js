@@ -50,7 +50,7 @@ const createStore = () => {
                 
                 // Al URL de la base de datos realtime en firebase hay que agregar
                 // el nombre de la colección + .json (firebase así lo requiere)
-                return this.$axios.$post('/posts.json', 
+                return this.$axios.$post('/posts.json?auth=' + vuexContext.state.token, 
                     createdPost)
                     .then(data => { 
                         vuexContext.commit('addPost', {...createdPost, id: data.name})
@@ -60,7 +60,7 @@ const createStore = () => {
             editPost(vuexContext, editedPost) {
                 // Actualizar un post existente en el backend y en la store
                 return this.$axios.$put('/posts/' 
-                    + editedPost.id + '.json', editedPost)
+                    + editedPost.id + '.json?auth=' + vuexContext.state.token, editedPost)
                     .then(res => { 
                         vuexContext.commit('editPost', editedPost)
                     })
