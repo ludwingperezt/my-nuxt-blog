@@ -26,6 +26,9 @@ const createStore = () => {
             },
             setToken(state, token) {
                 state.token = token
+            },
+            clearToken(state) {
+                state.token = null
             }
         },
         actions: {
@@ -61,8 +64,9 @@ const createStore = () => {
                 // Actualizar un post existente en el backend y en la store
                 return this.$axios.$put('/posts/' 
                     + editedPost.id + '.json?auth=' + vuexContext.state.token, editedPost)
-                    .then(res => { 
+                    .then(result => { 
                         vuexContext.commit('editPost', editedPost)
+                        vuexContext.dispatch('setLogoutTimer', result.expiresIn * 1000)
                     })
                     .catch(e => console.log(e))
             },
@@ -82,6 +86,11 @@ const createStore = () => {
                         vuexContext.commit('setToken', result.idToken)
                     })
                     .catch(e => console.log(e))
+            },
+            setLogoutTimer(vuexContext, duration) {
+                setTimeout(() => {
+                    vuexContext.commit('clearToken')
+                }, duration)
             }
         },
         getters: {
