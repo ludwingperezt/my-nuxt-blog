@@ -62,7 +62,8 @@ export default {
    * Ejemplo de uso de env para variables de entorno
    */
   env: {
-    baseUrl: process.env.BASE_URL || 'https://my-nuxt-blog-9b5f5.firebaseio.com'
+    baseUrl: process.env.BASE_URL || 'https://my-nuxt-blog-9b5f5.firebaseio.com',
+    fbAPIKey: 'AIzaSyCbPK7i1i3ga85loIcDb35pWOmcEfZCk0Q'
   },
   /**
    * Ejemplo de uso de transición entre páginas
