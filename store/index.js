@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import Cookie from 'js-cookie'
 
 // La store debe ser un callable y no un objeto, ya que nuxt lo utiliza en 
 // el servidor para iniciar una store 
@@ -87,7 +88,12 @@ const createStore = () => {
                         // El tiempo de expiración del token se almacena
                         // como una marca de tiempo en el futuro a partir de la
                         // cual el token ya no será válido
-                        localStorage.setItem('tokenExpiration', new Date().getTime() + result.expiresIn * 1000)
+                        const expirationDate = new Date().getTime() + result.expiresIn * 1000
+                        localStorage.setItem('tokenExpiration', expirationDate)
+                        
+                        //Almacenar en cookie
+                        Cookie.set('jwt', result.idToken)
+                        Cookie.set('expirationDate', expirationDate)
                         vuexContext.dispatch('setLogoutTimer', result.expiresIn * 1000)
                     })
                     .catch(e => console.log(e))
@@ -97,15 +103,38 @@ const createStore = () => {
                     vuexContext.commit('clearToken')
                 }, duration)
             },
-            initAuth(vuexContext) {
-                const token = localStorage.getItem('token')
-                const expirationDate = localStorage.getItem('tokenExpiration')
+            initAuth(vuexContext, req) {
+                let token;
+                let expirationDate;
+                if (req) {
+                    if (!req.headers.cookie) {
+                        return
+                    }
+                    const jwtCookie = req.headers.cookie
+                        .split(';')
+                        .find(c => c.trim().startsWith('jwt='))
+                    
+                    if (!jwtCookie) {
+                        return
+                    }
+                    token = jwtCookie.split('=')[1]
 
-                // Se antepone el signo más (+) a expirationDate para convertir
-                // su valor de cadena a entero. 
-                if (new Date().getTime() > +expirationDate || !token) {
-                    return
+                    expirationDate = req.headers.cookie
+                        .split(';')
+                        .find(c => c.trim().startsWith('expirationDate='))
+                        .split('=')[1]
                 }
+                else {
+                    token = localStorage.getItem('token')
+                    expirationDate = localStorage.getItem('tokenExpiration')
+
+                    // Se antepone el signo más (+) a expirationDate para convertir
+                    // su valor de cadena a entero. 
+                    if (new Date().getTime() > +expirationDate || !token) {
+                        return
+                    }
+                }
+
                 // Establecer el tiempo de expiración del token como la diferencia
                 // (el tiempo que aún queda) entre la marca de tiempo establecida
                 // como el limite de expiración y el momento actual
