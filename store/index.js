@@ -126,7 +126,8 @@ const createStore = () => {
                 // Se antepone el signo más (+) a expirationDate para convertir
                 // su valor de cadena a entero. 
                 if (new Date().getTime() > +expirationDate || !token) {
-                    vuexContext.commit('clearToken')
+                    console.log('No token or invalid token')
+                    vuexContext.dispatch('logout')
                     return
                 }
 
@@ -134,6 +135,13 @@ const createStore = () => {
                 // (el tiempo que aún queda) entre la marca de tiempo establecida
                 // como el limite de expiración y el momento actual
                 vuexContext.commit('setToken', token)
+            },
+            logout(vuexContext) {
+                vuexContext.commit('clearToken')
+                Cookie.remove('jwt')
+                Cookie.remove('expirationDate')
+                localStorage.removeItem('token')
+                localStorage.removeItem('tokenExpiration')
             }
         },
         getters: {
