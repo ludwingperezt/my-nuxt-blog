@@ -88,20 +88,14 @@ const createStore = () => {
                         // El tiempo de expiración del token se almacena
                         // como una marca de tiempo en el futuro a partir de la
                         // cual el token ya no será válido
-                        const expirationDate = new Date().getTime() + result.expiresIn * 1000
+                        const expirationDate = new Date().getTime() + Number.parseInt(result.expiresIn) * 1000
                         localStorage.setItem('tokenExpiration', expirationDate)
                         
                         //Almacenar en cookie
                         Cookie.set('jwt', result.idToken)
                         Cookie.set('expirationDate', expirationDate)
-                        vuexContext.dispatch('setLogoutTimer', result.expiresIn * 1000)
                     })
                     .catch(e => console.log(e))
-            },
-            setLogoutTimer(vuexContext, duration) {
-                setTimeout(() => {
-                    vuexContext.commit('clearToken')
-                }, duration)
             },
             initAuth(vuexContext, req) {
                 let token;
@@ -127,18 +121,18 @@ const createStore = () => {
                 else {
                     token = localStorage.getItem('token')
                     expirationDate = localStorage.getItem('tokenExpiration')
+                }
 
-                    // Se antepone el signo más (+) a expirationDate para convertir
-                    // su valor de cadena a entero. 
-                    if (new Date().getTime() > +expirationDate || !token) {
-                        return
-                    }
+                // Se antepone el signo más (+) a expirationDate para convertir
+                // su valor de cadena a entero. 
+                if (new Date().getTime() > +expirationDate || !token) {
+                    vuexContext.commit('clearToken')
+                    return
                 }
 
                 // Establecer el tiempo de expiración del token como la diferencia
                 // (el tiempo que aún queda) entre la marca de tiempo establecida
                 // como el limite de expiración y el momento actual
-                vuexContext.dispatch('setLogoutTimer', +expirationDate - new Date().getTime())
                 vuexContext.commit('setToken', token)
             }
         },
