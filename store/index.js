@@ -94,6 +94,10 @@ const createStore = () => {
                         //Almacenar en cookie
                         Cookie.set('jwt', result.idToken)
                         Cookie.set('expirationDate', expirationDate)
+
+                        return this.$axios.$post('http://localhost:3000/api/track-data', {
+                            data: 'Authenticated'
+                        })
                     })
                     .catch(e => console.log(e))
             },
