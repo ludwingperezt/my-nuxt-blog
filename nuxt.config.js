@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 
 export default {
   mode: 'universal',
@@ -71,8 +72,12 @@ export default {
   pageTransition: {
     name: 'page',
     mode: 'out-in'
-  }
+  },
   // router: {
   //   middleware: 'log'
-  // }
+  // },
+  serverMiddleware: [
+    bodyParser.json(),
+    '~/api'
+  ]
 }
