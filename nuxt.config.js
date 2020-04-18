@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser')
+const axios = require('axios')
 
 export default {
   mode: 'universal',
@@ -79,5 +80,27 @@ export default {
   serverMiddleware: [
     bodyParser.json(),
     '~/api'
-  ]
+  ],
+  generate: {
+    routes: function() {
+      // Ejemplo de generación estática de rutas dinámicas.
+      return axios.get('https://my-nuxt-blog-9b5f5.firebaseio.com/posts.json')
+        .then(res => {
+          const routes = []
+          for (let key in res.data) {
+            // Esta configuración genera múltiples llamadas a la api (la general
+            // donde se obtienen las claves y luego una por cada key a ser
+            // generada). Para limitar esto se puede utilizar la configuración
+            // que genera la ruta y un payload que evita llamadas adicionales
+            // al servidor
+            //routes.push('/posts/' + key)
+            routes.push({
+              route: '/posts/' + key,
+              payload: {postData: res.data[key]}
+            })
+          }
+          return routes
+        })
+    }
+  }
 }

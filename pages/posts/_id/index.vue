@@ -20,6 +20,15 @@
 
 export default {
   asyncData(context) {
+    // En caso de que se generen la página de forma estática, se revisa el 
+    // context en busca de un payload el cual será utilizado para generar la 
+    // vista, omitiendo la llamada a la API. (Ver la configuración de generate/routes
+    // en nuxt.config.js)
+    if (context.payload) {
+      return {
+        loadedPost: context.payload.postData
+      }
+    }
     return context.app.$axios.$get('/posts/' + context.params.id + '.json')
     .then(data => {
       return {

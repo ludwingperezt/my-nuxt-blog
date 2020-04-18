@@ -122,7 +122,12 @@ const createStore = () => {
                         .find(c => c.trim().startsWith('expirationDate='))
                         .split('=')[1]
                 }
-                else {
+                else if (process.client) {
+                    // Se agregó la condición de que verifique si está corriendo
+                    // en el cliente para poder utilizar localStorage ya que 
+                    // cuando se generan las páginas estáticas el entorno es
+                    // diferente, no es ni servidor ni cliente y por lo tanto
+                    // no existe localStorage
                     token = localStorage.getItem('token')
                     expirationDate = localStorage.getItem('tokenExpiration')
                 }
